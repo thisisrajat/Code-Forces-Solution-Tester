@@ -351,12 +351,11 @@ while(1):
 		except KeyError:
 		 	flag=1
 		if(flag==0):
-			print Test_Cases[x][0]
-			print Test_Cases[x][1]
-			if(Test_Cases[x][3]=='ACC' or Test_Cases[x][3]=='WA'):
-				print Test_Cases[x][2]
-			print Test_Cases[x][3]
-			print Test_Cases[x][4],'s'
+			print "Input   : ",Test_Cases[x][0]
+			print "Answer  : ",Test_Cases[x][1]
+			print "OutPut  : ",Test_Cases[x][2]
+			print "Verdict : ",Test_Cases[x][3]
+			print "Ex Time : ",Test_Cases[x][4],'s'
 		else:
 		  	print "Try cases with in 1 to",File_Index-1
 	else:

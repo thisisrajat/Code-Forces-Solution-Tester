@@ -45,11 +45,25 @@ Help="""Quit or q : To quit\n
 from urllib2 import *
 from re import *
 from sys import *
-import BeautifulSoup
 import time
 import threading
 import subprocess
 import os
+
+bs4 = False
+try:
+  import BeautifulSoup
+except ImportError:
+  from bs4 import BeautifulSoup
+  bs4 = True
+
+def getBeautifulSoup(html):
+  if bs4:
+    return BeautifulSoup(html)
+  else: 
+    return BeautifulSoup.BeautifulSoup(html)
+
+
 
 class Command(object):
 	def __init__(self, cmd):
@@ -87,11 +101,11 @@ def Extract(Contest_Code,Problem_Code):
 		html=urlopen(Url,timeout=600).read()
 		print "Connected"
 		print "Parsing HTML ...."
-		soup=BeautifulSoup.BeautifulSoup(html)
+		soup=getBeautifulSoup(html)
 		TR=soup.findAll('tr')
 		print "HTML Parsed"
 		for i in TR:
-			soup=BeautifulSoup.BeautifulSoup(str(i))
+			soup=getBeautifulSoup(str(i))
 			TD=soup.findAll('td')
 			l=0
 			XX={}
@@ -105,7 +119,7 @@ def Extract(Contest_Code,Problem_Code):
 					XX[l]=str(temp[0])
 				elif(l==7):
 					if('GNU C++' in XX[4]):
-						soup=BeautifulSoup.BeautifulSoup(XX[0])
+						soup=getBeautifulSoup(XX[0])
 						A=soup.findAll('a')
 						for k in A:
 							temp=k.contents[0]
@@ -122,8 +136,21 @@ def is_Number(x):
 	return 1
 
 Contest_Code=raw_input('Contest Code : ').strip(' ').strip('\n')
+try:
+	int(Contest_Code)
+except:
+	raise TypeError("Contest Code not an Integer")
+	exit(0)
 Problem_Code=raw_input('Problem Code : ').strip(' ').strip('\n')
+try:
+	int(Problem_Code)
+except:
+	raise TypeError("Problem Code not an Integer")
+	exit(0)
 Executable=raw_input('Executable   : ').strip(' ').strip('\n')
+if os.path.exists(Executable) is False:
+	raise IOError('Executable File not found')
+	exit(0)
 TL=raw_input('Time Limit   : ').strip(' ').strip('\n')
 Unofficial_Input=int(raw_input('Unofficial Cases : ').strip(' ').strip('\n'))
 
@@ -133,7 +160,7 @@ print "Extracting Source Code ..."
 Url='http://codeforces.com/contest/'+Contest_Code+'/submission/'+Sol_Id
 html=urlopen(Url,timeout=600).read()
 html=html.replace('\r','')
-soup=BeautifulSoup.BeautifulSoup(html)
+soup=getBeautifulSoup(html)
 PRE=soup.findAll('pre')
 print "Extracted"
 print "Saving to acc_code.cpp ...."
